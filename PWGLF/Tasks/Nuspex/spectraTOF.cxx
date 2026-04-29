@@ -2626,18 +2626,21 @@ struct tofSpectra {
     // (Keeping your original includeCentralityMC legacy block intact to avoid breaking other parts of your code)
     if (includeCentralityMC) {
       for (const auto& collision : collisions) {
-        if (!collision.has_mcCollision()) continue;
+        if (!collision.has_mcCollision())
+          continue;
         const auto& mcCollision = collision.mcCollision_as<GenMCCollisions>();
         const auto& particlesInCollision = mcParticles.sliceByCached(aod::mcparticle::mcCollisionId, mcCollision.globalIndex(), cache);
         const float multiplicity = getMultiplicity(collision);
         for (const auto& mcParticle : particlesInCollision) {
-          if (std::abs(mcParticle.y()) > trkselOptions.cfgCutY) continue;
+          if (std::abs(mcParticle.y()) > trkselOptions.cfgCutY)
+            continue;
           static_for<0, 17>([&](auto i) { fillParticleHistogramsMC<i>(multiplicity, mcParticle); });
         }
       }
     } else {
       for (const auto& mcParticle : mcParticles) {
-        if (std::abs(mcParticle.y()) > trkselOptions.cfgCutY) continue;
+        if (std::abs(mcParticle.y()) > trkselOptions.cfgCutY)
+          continue;
         const auto& mcCollision = mcParticle.mcCollision_as<GenMCCollisions>();
         const float multiplicity = getMultiplicityMC(mcCollision);
         static_for<0, 17>([&](auto i) { fillParticleHistogramsMC<i>(multiplicity, mcParticle); });
@@ -2655,10 +2658,12 @@ struct tofSpectra {
       const auto& particlesInCollision = mcParticles.sliceByCached(aod::mcparticle::mcCollisionId, mcCollision.globalIndex(), cache);
 
       if (evselOptions.cfgINELCut.value == 1) {
-        if (!o2::pwglf::isINELgt0mc(particlesInCollision, pdgDB)) continue;
+        if (!o2::pwglf::isINELgt0mc(particlesInCollision, pdgDB))
+          continue;
       }
       if (evselOptions.cfgINELCut.value == 2) {
-        if (!o2::pwglf::isINELgt1mc(particlesInCollision, pdgDB)) continue;
+        if (!o2::pwglf::isINELgt1mc(particlesInCollision, pdgDB))
+          continue;
       }
 
       // -- Get Actual Reconstructed Centrality --
@@ -2667,7 +2672,8 @@ struct tofSpectra {
       // -- Calculate True Multiplicity in |eta| < 0.5 --
       int trueMultEta05 = 0;
       for (const auto& mcParticle : particlesInCollision) {
-        if (!mcParticle.isPhysicalPrimary()) continue;
+        if (!mcParticle.isPhysicalPrimary())
+          continue;
         auto* pdgParticle = pdgDB->GetParticle(mcParticle.pdgCode());
         if (pdgParticle != nullptr && std::abs(pdgParticle->Charge()) > 0.01) {
           if (std::abs(mcParticle.eta()) < 0.5f) {
@@ -2683,7 +2689,8 @@ struct tofSpectra {
       }
 
       for (const auto& mcParticle : particlesInCollision) {
-        if (std::abs(mcParticle.y()) > trkselOptions.cfgCutY) continue;
+        if (std::abs(mcParticle.y()) > trkselOptions.cfgCutY)
+          continue;
         static_for<0, 17>([&](auto i) {
           // Pass the actual Reco Centrality to the helper function
           fillParticleHistogramsMCRecoEvs<i>(mcParticle, collision, recoCentrality);
@@ -2704,7 +2711,8 @@ struct tofSpectra {
       // -- Calculate True Multiplicity in |eta| < 0.5 --
       int trueMultEta05 = 0;
       for (const auto& mcParticle : particlesInCollision) {
-        if (!mcParticle.isPhysicalPrimary()) continue;
+        if (!mcParticle.isPhysicalPrimary())
+          continue;
         auto* pdgParticle = pdgDB->GetParticle(mcParticle.pdgCode());
         if (pdgParticle != nullptr && std::abs(pdgParticle->Charge()) > 0.01) {
           if (std::abs(mcParticle.eta()) < 0.5f) {
@@ -2716,17 +2724,20 @@ struct tofSpectra {
       histos.fill(HIST("MC/Multiplicity"), trueMultEta05);
 
       if (evselOptions.cfgINELCut.value == EvSelInelGt0Cut) {
-        if (!o2::pwglf::isINELgt0mc(particlesInCollision, pdgDB)) continue;
+        if (!o2::pwglf::isINELgt0mc(particlesInCollision, pdgDB))
+          continue;
       }
       histos.fill(HIST("MC/MultiplicityMCINELgt0"), trueMultEta05);
 
       if (evselOptions.cfgINELCut.value == EvSelInelGt1Cut) {
-        if (!o2::pwglf::isINELgt1mc(particlesInCollision, pdgDB)) continue;
+        if (!o2::pwglf::isINELgt1mc(particlesInCollision, pdgDB))
+          continue;
       }
       histos.fill(HIST("MC/MultiplicityMCINELgt1"), trueMultEta05);
 
       for (const auto& mcParticle : particlesInCollision) {
-        if (std::abs(mcParticle.y()) > trkselOptions.cfgCutY) continue;
+        if (std::abs(mcParticle.y()) > trkselOptions.cfgCutY)
+          continue;
         static_for<0, 17>([&](auto i) {
           // Pass True Multiplicity directly so it plots generated particles against it
           fillParticleHistogramsMCGenEvs<i>(mcParticle, trueMultEta05);
