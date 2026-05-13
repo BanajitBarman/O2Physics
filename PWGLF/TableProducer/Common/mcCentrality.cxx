@@ -34,8 +34,8 @@
 #include <Framework/OutputObjHeader.h>
 #include <Framework/runDataProcessing.h>
 
-#include <TH1.h>
 #include <TFile.h>
+#include <TH1.h>
 
 #include <chrono>
 #include <cstdint>
@@ -52,7 +52,7 @@ struct McCentrality {
   Produces<aod::McCentFT0Ms> centFT0M;
   Produces<aod::McCentFT0As> centFT0A;
   Produces<aod::McCentFT0Cs> centFT0C;
-  
+
   // NOTE: Commented out unused produces to prevent garbage columns in AOD
   // Produces<aod::McCentFV0As> centFV0A;
   // Produces<aod::McCentFDDMs> centFDDM;
@@ -67,7 +67,7 @@ struct McCentrality {
   Service<o2::framework::O2DatabasePDG> pdgDB;
   ConfigurableAxis binsPercentile{"binsPercentile", {VARIABLE_WIDTH, 0, 0.001, 0.01, 1.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0}, "Binning of the percentile axis"};
   ConfigurableAxis binsMultiplicity{"binsMultiplicity", {1000, 0, 5000}, "Binning of the multiplicity axis"};
-  
+
   // Added fillFt0M to allow running strictly on A/C without crashing on missing M
   Configurable<bool> fillFt0M{"fillFt0M", true, "Fills the FT0M histogram"};
   Configurable<bool> fillFt0A{"fillFt0A", false, "Fills the FT0A histogram"};
@@ -148,7 +148,7 @@ struct McCentrality {
       }
       // Clone to detach from TFile directory so we can safely close the file
       auto hist = static_cast<TH1F*>(obj->Clone(Form("%s_clone", name)));
-      hist->SetDirectory(nullptr); 
+      hist->SetDirectory(nullptr);
       return hist;
     };
 
